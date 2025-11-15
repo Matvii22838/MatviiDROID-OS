@@ -1,0 +1,328 @@
+print("loading...")
+os.execute("sleep 5")
+
+-- MatviiDROID 4.1
+
+-- Таблиця налаштувань
+settings = {
+    textColor = "default",
+    sound = false,
+    language = "uk"
+}
+
+function colorPrint(text)
+    if settings.textColor == "red" then
+        print("\27[31m"..text.."\27[0m")
+    elseif settings.textColor == "green" then
+        print("\27[32m"..text.."\27[0m")
+    else
+        print(text)
+    end
+end
+
+function text(key)
+    local t = {
+        ["main_title"] = {uk="MatviiDROID 4.1", en="MatviiDROID 4.1"},
+        ["menu_settings"] = {uk="Налаштування", en="Settings"},
+        ["menu_calc"] = {uk="Калькулятор", en="Calculator"},
+        ["menu_info"] = {uk="Інформація про систему", en="System Info"},
+        ["menu_games"] = {uk="Міні-ігри", en="Mini Games"},
+        ["menu_files"] = {uk="Провідник", en="File Explorer"},
+        ["menu_notes"] = {uk="Нотатки", en="Notes"},
+        ["cmd_invalid"] = {uk="Невірна команда", en="Invalid command"},
+        ["back"] = {uk="back - Повернутись на головне меню", en="back - Return to main menu"},
+        ["developer"] = {uk="Розробник: Матвій Пернеровський", en="Developer: Matvii Pernerovskyi"},
+        ["version"] = {uk="Версія системи: 4.1", en="System version: 4.1"},
+        ["update_info"] = {uk="Оновлення 4.1: Покращено стиль програм Провідник та Нотатки", en="Update 4.1: Improved style of File Explorer and Notes"},
+        ["enter_command"] = {uk="Введи команду: ", en="Enter command: "},
+        ["settings_color"] = {uk="1. Змінити колір тексту", en="1. Change text color"},
+        ["settings_sound"] = {uk="2. Увімкнути/вимкнути звук", en="2. Toggle sound"},
+        ["settings_language"] = {uk="3. Змінити мову (uk/en)", en="3. Change language (uk/en)"},
+        ["calc_prompt1"] = {uk="Число 1: ", en="Number 1: "},
+        ["calc_prompt2"] = {uk="Операція (+ - * /): ", en="Operation (+ - * /): "},
+        ["calc_prompt3"] = {uk="Число 2: ", en="Number 2: "},
+        ["calc_result"] = {uk="Результат: ", en="Result: "},
+        ["games_rps"] = {uk="Камінь-ножиці-папір", en="Rock-Paper-Scissors"},
+        ["rps_prompt"] = {uk="Твій вибір: ", en="Your choice: "},
+        ["rps_computer"] = {uk="Комп'ютер вибрав: ", en="Computer chose: "},
+        ["rps_win"] = {uk="Ти виграв!", en="You win!"},
+        ["rps_lose"] = {uk="Ти програв!", en="You lose!"},
+        ["rps_draw"] = {uk="Нічия!", en="Draw!"}
+    }
+    return t[key][settings.language]
+end
+
+-- Головне меню
+function mainMenu()
+    while true do
+        print("\n==============================")
+        colorPrint("        "..text("main_title").."       ")
+        print("==============================\n")
+        print("settings - "..text("menu_settings"))
+        print("calc - "..text("menu_calc"))
+        print("info - "..text("menu_info"))
+        print("games - "..text("menu_games"))
+        print("files - "..text("menu_files"))
+        print("notes - "..text("menu_notes").."\n")
+        io.write(text("enter_command"))
+        local cmd = io.read()
+        if cmd == "settings" then
+            settingsMenu()
+        elseif cmd == "calc" then
+            calculator()
+        elseif cmd == "info" then
+            systemInfo()
+        elseif cmd == "games" then
+            miniGames()
+        elseif cmd == "files" then
+            fileExplorer()
+        elseif cmd == "notes" then
+            notesApp()
+        else
+            print(text("cmd_invalid"))
+        end
+    end
+end
+
+-- Налаштування
+function settingsMenu()
+    while true do
+        print("\n------ "..text("menu_settings").." ------\n")
+        print(text("settings_color"))
+        print(text("settings_sound"))
+        print(text("settings_language"))
+        print(text("back").."\n")
+        io.write(text("enter_command"))
+        local cmd = io.read()
+        if cmd == "1" then
+            io.write("Введи колір тексту: ")
+            local color = io.read()
+            settings.textColor = color
+        elseif cmd == "2" then
+            settings.sound = not settings.sound
+            print("Звук / Sound:", settings.sound and "On / Увімкнено" or "Off / Вимкнено")
+        elseif cmd == "3" then
+            io.write("Введи мову (uk/en): ")
+            local lang = io.read()
+            if lang == "uk" or lang == "en" then
+                settings.language = lang
+                print("Мова змінена / Language changed: "..lang)
+            else
+                print(text("cmd_invalid"))
+            end
+        elseif cmd == "back" then
+            break
+        else
+            print(text("cmd_invalid"))
+        end
+    end
+end
+
+-- Калькулятор
+function calculator()
+    while true do
+        print("\n------ "..text("menu_calc").." ------\n")
+        print(text("back"))
+        io.write(text("calc_prompt1"))
+        local a = io.read()
+        if a == "back" then break end
+        a = tonumber(a)
+        io.write(text("calc_prompt2"))
+        local op = io.read()
+        io.write(text("calc_prompt3"))
+        local b = io.read()
+        if b == "back" then break end
+        b = tonumber(b)
+        local result
+        if op == "+" then result = a + b
+        elseif op == "-" then result = a - b
+        elseif op == "*" then result = a * b
+        elseif op == "/" then result = a / b
+        else
+            print(text("cmd_invalid"))
+        end
+        if result then print(text("calc_result")..result) end
+    end
+end
+
+-- Інформація про систему
+function systemInfo()
+    while true do
+        print("\n------ "..text("menu_info").." ------\n")
+        print(text("developer"))
+        print(text("version"))
+        print(text("update_info"))
+        print(text("back"))
+        local cmd = io.read()
+        if cmd == "back" then break end
+    end
+end
+
+-- Міні-ігри
+function miniGames()
+    while true do
+        print("\n------ "..text("menu_games").." ------\n")
+        print("1. "..text("games_rps"))
+        print(text("back").."\n")
+        io.write(text("enter_command"))
+        local cmd = io.read()
+        if cmd == "1" then
+            rockPaperScissors()
+        elseif cmd == "back" then
+            break
+        else
+            print(text("cmd_invalid"))
+        end
+    end
+end
+
+-- Камінь-ножиці-папір
+function rockPaperScissors()
+    local options = {"камінь", "ножиці", "папір"}
+    print("\n"..text("games_rps").." ("..text("back")..")")
+    while true do
+        io.write(text("rps_prompt"))
+        local player = io.read()
+        if player == "back" then break end
+        local computer = options[math.random(1,3)]
+        print(text("rps_computer")..computer)
+        if player == computer then
+            print(text("rps_draw"))
+        elseif (player=="камінь" and computer=="ножиці") or
+               (player=="ножиці" and computer=="папір") or
+               (player=="папір" and computer=="камінь") then
+            print(text("rps_win"))
+        else
+            print(text("rps_lose"))
+        end
+    end
+end
+
+-- Провідник
+function fileExplorer()
+    print("🗂️  Провідник")
+    local filesystem = {
+        ["Зображення"] = {
+            ["Арт 1"] = [[
+ /\_/\  
+( o.o ) 
+ > ^ <
+            ]],
+            ["Арт 2"] = [[
+  |\_/|
+  |o o|
+  ( T )
+            ]]
+        },
+        ["Документи"] = {
+            ["Вірш 1"] = [[
+Ранок настав, і сонце встає,
+Світ навколо грає, оживає.
+            ]],
+            ["Вірш 2"] = [[
+Вітер свище у гаю,
+Листя танцює в раю.
+            ]]
+        }
+    }
+
+    local function browse(folder)
+        while true do
+            print("\n📁 Папка: "..folder.." ("..text("back")..")")
+            local items = filesystem[folder]
+            local i = 1
+            local indexMap = {}
+            for name, _ in pairs(items) do
+                print("  "..i..". "..name)
+                indexMap[i] = name
+                i = i + 1
+            end
+            io.write("Введи номер файлу: ")
+            local choice = io.read()
+            if choice == "back" then break end
+            if indexMap[tonumber(choice)] then
+                print("\n=== "..indexMap[tonumber(choice)].." ===")
+                print(items[indexMap[tonumber(choice)]])
+            else
+                print(text("cmd_invalid"))
+            end
+        end
+    end
+
+    while true do
+        print("\n📂 Коренева папка ("..text("back").."):")
+        local i = 1
+        local folders = {}
+        for name, _ in pairs(filesystem) do
+            print("  "..i..". "..name)
+            folders[i] = name
+            i = i + 1
+        end
+        io.write("Введи номер папки: ")
+        local choice = io.read()
+        if choice == "back" then break end
+        if folders[tonumber(choice)] then
+            browse(folders[tonumber(choice)])
+        else
+            print(text("cmd_invalid"))
+        end
+    end
+end
+
+-- Нотатки
+function notesApp()
+    print("📋  Нотатки")
+    local tasks = {}
+
+    while true do
+        print("\nСписок дій ("..text("back").."):")
+        print("  1 - Додати справу")
+        print("  2 - Переглянути список справ")
+        print("  3 - Видалити справу")
+        io.write("Введи команду: ")
+        local choice = io.read()
+
+        if choice == "back" then
+            break
+        elseif choice == "1" then
+            io.write("Введи назву справи: ")
+            local task = io.read()
+            table.insert(tasks, task)
+            print("✅ Додано: "..task)
+        elseif choice == "2" then
+            if #tasks == 0 then
+                print("Список справ порожній.")
+            else
+                print("Твої справи:")
+                for i, t in ipairs(tasks) do
+                    print("  "..i..". "..t)
+                end
+            end
+        elseif choice == "3" then
+            if #tasks == 0 then
+                print("Немає чого видаляти.")
+            else
+                print("Яку справу видалити? Введи номер або 'back':")
+                for i, t in ipairs(tasks) do
+                    print("  "..i..". "..t)
+                end
+                local num = io.read()
+                if num == "back" then
+                else
+                    num = tonumber(num)
+                    if num and tasks[num] then
+                        print("❌ Видалено: "..tasks[num])
+                        table.remove(tasks, num)
+                    else
+                        print(text("cmd_invalid"))
+                    end
+                end
+            end
+        else
+            print(text("cmd_invalid"))
+        end
+    end
+end
+
+-- Старт системи
+mainMenu()
