@@ -1,0 +1,269 @@
+print("loading...")
+os.execute("sleep 10")
+
+-- MatviiDROID 5
+
+-- Таблиця налаштувань
+settings = {
+    textColor = "default",
+    language = "uk"
+}
+
+function colorPrint(text)
+    if settings.textColor == "red" then
+        print("\27[31m"..text.."\27[0m")
+    elseif settings.textColor == "green" then
+        print("\27[32m"..text.."\27[0m")
+    else
+        print(text)
+    end
+end
+
+function text(key)
+    local t = {
+        ["main_title"] = {uk="MatviiDROID 5", en="MatviiDROID 5"},
+        ["menu_settings"] = {uk="Налаштування", en="Settings"},
+        ["menu_calc"] = {uk="Калькулятор", en="Calculator"},
+        ["menu_info"] = {uk="Інформація про систему", en="System Info"},
+        ["menu_games"] = {uk="Міні-ігри", en="Mini Games"},
+        ["cmd_invalid"] = {uk="Невірна команда", en="Invalid command"},
+        ["back"] = {uk="back - Повернутись на головне меню", en="back - Return to main menu"},
+        ["developer"] = {uk="Розробник: Матвій Пернеровський", en="Developer: Matvii Pernerovskyi"},
+        ["version"] = {uk="Версія системи: 5", en="System version: 5"},
+        ["update_info"] = {uk="Додана гра Roll з 10 рівнями", en="Added Roll game with 10 levels"},
+        ["enter_command"] = {uk="Введи команду: ", en="Enter command: "},
+        ["settings_color"] = {uk="1. Змінити колір тексту", en="1. Change text color"},
+        ["settings_language"] = {uk="2. Змінити мову (uk/en)", en="2. Change language (uk/en)"},
+        ["calc_prompt1"] = {uk="Число 1: ", en="Number 1: "},
+        ["calc_prompt2"] = {uk="Операція (+ - * /): ", en="Operation (+ - * /): "},
+        ["calc_prompt3"] = {uk="Число 2: ", en="Number 2: "},
+        ["calc_result"] = {uk="Результат: ", en="Result: "},
+        ["games_rps"] = {uk="Камінь-ножиці-папір", en="Rock-Paper-Scissors"},
+        ["rps_prompt"] = {uk="Твій вибір: ", en="Your choice: "},
+        ["rps_computer"] = {uk="Комп'ютер вибрав: ", en="Computer chose: "},
+        ["rps_win"] = {uk="Ти виграв!", en="You win!"},
+        ["rps_lose"] = {uk="Ти програв!", en="You lose!"},
+        ["rps_draw"] = {uk="Нічия!", en="Draw!"}
+    }
+    return t[key][settings.language]
+end
+
+-- Робочий стіл
+desktop = {"settings","info","calc","files","notes"}
+
+-- Головне меню
+function mainMenu()
+    while true do
+        print("\n==============================")
+        colorPrint("        "..text("main_title").."       ")
+        print("==============================\n")
+        for _, app in ipairs(desktop) do
+            print(app)
+        end
+        print("games")
+        print("")
+        io.write(text("enter_command"))
+        local cmd = io.read()
+        if cmd == "settings" then
+            settingsMenu()
+        elseif cmd == "calc" then
+            calculator()
+        elseif cmd == "info" then
+            systemInfo()
+        elseif cmd == "files" then
+            fileExplorer()
+        elseif cmd == "notes" then
+            notesApp()
+        elseif cmd == "games" then
+            miniGames()
+        else
+            print(text("cmd_invalid"))
+        end
+    end
+end
+
+-- Налаштування
+function settingsMenu()
+    while true do
+        print("\n------ "..text("menu_settings").." ------\n")
+        print(text("settings_color"))
+        print(text("settings_language"))
+        print(text("back").."\n")
+        io.write(text("enter_command"))
+        local cmd = io.read()
+        if cmd == "1" then
+            io.write("Введи колір тексту: ")
+            local color = io.read()
+            settings.textColor = color
+        elseif cmd == "2" then
+            io.write("Введи мову (uk/en): ")
+            local lang = io.read()
+            if lang == "uk" or lang == "en" then
+                settings.language = lang
+                print("Мова змінена / Language changed: "..lang)
+            else
+                print(text("cmd_invalid"))
+            end
+        elseif cmd == "back" then
+            break
+        else
+            print(text("cmd_invalid"))
+        end
+    end
+end
+
+-- Калькулятор
+function calculator()
+    while true do
+        print("\n------ "..text("menu_calc").." ------\n")
+        print(text("back"))
+        io.write(text("calc_prompt1"))
+        local a = io.read()
+        if a == "back" then break end
+        a = tonumber(a)
+        io.write(text("calc_prompt2"))
+        local op = io.read()
+        io.write(text("calc_prompt3"))
+        local b = io.read()
+        if b == "back" then break end
+        b = tonumber(b)
+        local result
+        if op == "+" then result = a + b
+        elseif op == "-" then result = a - b
+        elseif op == "*" then result = a * b
+        elseif op == "/" then result = a / b
+        else
+            print(text("cmd_invalid"))
+        end
+        if result then print(text("calc_result")..result) end
+    end
+end
+
+-- Інформація про систему
+function systemInfo()
+    while true do
+        print("\n------ "..text("menu_info").." ------\n")
+        print(text("developer"))
+        print(text("version"))
+        print(text("update_info"))
+        print(text("back"))
+        local cmd = io.read()
+        if cmd == "back" then break end
+    end
+end
+
+-- Провідник файлів
+function fileExplorer()
+    print("\nВітаю! Це твій віртуальний провідник 🗂️")
+    print("Тут можуть бути файли і зображення")
+end
+
+-- Нотатки
+function notesApp()
+    print("\nВітаю! Це твій локальний помічник 📋")
+    print("Тут можна додавати нотатки")
+end
+
+-- Міні-ігри
+function miniGames()
+    while true do
+        print("\n------ "..text("menu_games").." ------\n")
+        print("1. "..text("games_rps"))
+        print("2. Roll")
+        print(text("back").."\n")
+        io.write(text("enter_command"))
+        local cmd = io.read()
+        if cmd == "1" then
+            rockPaperScissors()
+        elseif cmd == "2" then
+            rollGame()
+        elseif cmd == "back" then
+            break
+        else
+            print(text("cmd_invalid"))
+        end
+    end
+end
+
+-- Камінь-ножиці-папір
+function rockPaperScissors()
+    local options = {"камінь", "ножиці", "папір"}
+    print("\n"..text("games_rps").." ("..text("back")..")")
+    while true do
+        io.write(text("rps_prompt"))
+        local player = io.read()
+        if player == "back" then break end
+        local computer = options[math.random(1,3)]
+        print(text("rps_computer")..computer)
+        if player == computer then
+            print(text("rps_draw"))
+        elseif (player=="камінь" and computer=="ножиці") or
+               (player=="ножиці" and computer=="папір") or
+               (player=="папір" and computer=="камінь") then
+            print(text("rps_win"))
+        else
+            print(text("rps_lose"))
+        end
+    end
+end
+
+-- Гра Roll
+function rollGame()
+    local levels = {
+        {
+            "#########",
+            "#@   # +#",
+            "# ###  ##",
+            "#       #",
+            "#########"
+        },
+        {
+            "#########",
+            "# @#   +#",
+            "#  ###  #",
+            "#       #",
+            "#########"
+        },
+        -- 8 інших рівнів тут можна додати аналогічно
+    }
+    local playerX, playerY
+    for lvl=1,#levels do
+        local map = levels[lvl]
+        -- знайти @
+        for y=1,#map do
+            local row = map[y]
+            local x = row:find("@")
+            if x then playerX, playerY = x, y end
+        end
+        while true do
+            -- показати рівень
+            for y=1,#map do print(map[y]) end
+            print("Використовуй W/A/S/D щоб рухатись, back для виходу")
+            local move = io.read():lower()
+            if move=="back" then return end
+            local dx,dy=0,0
+            if move=="w" then dy=-1
+            elseif move=="s" then dy=1
+            elseif move=="a" then dx=-1
+            elseif move=="d" then dx=1
+            end
+            local newX,newY=playerX+dx,playerY+dy
+            local row = map[newY]
+            if row then
+                local tile = row:sub(newX,newX)
+                if tile~="#" then
+                    row = row:sub(1,newX-1).."@"..row:sub(newX+1)
+                    row = map[playerY]:sub(1,playerX-1).." "..map[playerY]:sub(playerX+1)
+                    map[newY]=row
+                    map[playerY]=map[playerY]:sub(1,playerX-1).." "..map[playerY]:sub(playerX+1)
+                    playerX,playerY=newX,newY
+                end
+                if tile=="+" then break end
+            end
+        end
+    end
+    print("Ти пройшов усі рівні! Повернення на робочий стіл.")
+end
+
+-- Старт програми
+mainMenu()
